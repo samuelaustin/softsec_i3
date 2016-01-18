@@ -1,0 +1,542 @@
+module names/names
+
+imports
+  runtime/nabl/-
+  runtime/task/-
+  runtime/properties/-
+  runtime/types/-
+  runtime/relations/-
+  runtime/editor/-
+  include/BufferC
+
+
+signature
+  constructors
+    NablNsModule     : Namespace
+    NablNsVariable   : Namespace
+    NablNsFunction   : Namespace
+    NablNsReturnType : Namespace
+
+
+signature
+  constructors
+    
+
+
+rules
+
+  nabl-custom-properties(add-properties) =
+    ![] ; add-properties
+
+
+rules
+
+  nabl-get-scope =
+    ?Module(Identifier(name), _, _)
+    ; ![NablNsVariable(), NablNsFunction()]
+
+  nabl-get-name :
+    Module(Identifier(name), _, _) -> name
+
+  nabl-name-apply(s) =
+    Module(Identifier(s), id, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, ctx__, uniques__, uri__, states__) =
+    ?Module(Identifier(name), _, _)
+    ; origin-track-forced(
+        Module(
+          origin-track-forced(
+            Identifier(
+              nabl-def(
+                ?c-uri1__
+              , ?s-uri1__
+              | lang__
+              , ctx__
+              , uniques__
+              , uri__
+              , uri__
+              , NablNsModule()
+              , Unique()
+              , Current()
+              , [NablNsVariable(), NablNsFunction()]
+              , []
+              )
+            )
+          |
+          )
+        , id
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-get-name :
+    Import(Identifier(name)) -> name
+
+  nabl-name-apply(s) =
+    Import(Identifier(s))
+
+  nabl-use-site(|lang__, ctx__, uniques__, uris__, states__) =
+    ?Import(Identifier(name))
+    ; origin-track-forced(
+        Import(
+          origin-track-forced(
+            Identifier(
+              nabl-use(
+              | lang__
+              , ctx__
+              , uniques__
+              , uris__
+              , [ <{:
+                     id
+                     ; !UseCandidate(
+                          NablNsModule()
+                        , []
+                        , Current()
+                        , True()
+                        , []
+                        )
+                   }>
+                ]
+              )
+            )
+          |
+          )
+        )
+      |
+      )
+
+  nabl-import-site(|lang__, ctx__, uniques__, uris__, states__) =
+    ?Import(Identifier(name))
+    ; origin-track-forced(
+        nabl-import(
+        | lang__
+        , ctx__
+        , uniques__
+        , uris__
+        , [ <{:
+               id
+               ; !Wildcard(
+                    [Import(lang__, NablNsFunction())]
+                  , Context(
+                      NablNsModule()
+                    , name
+                    , []
+                    , Current()
+                    )
+                  , Current()
+                  , []
+                  )
+             }>
+          ]
+        )
+      |
+      )
+
+  nabl-get-scope =
+    ?FunProto(t, Identifier(name), params)
+    ; ![NablNsVariable()]
+
+  nabl-get-name :
+    FunProto(t, Identifier(name), params) -> name
+
+  nabl-name-apply(s) =
+    FunProto(id, Identifier(s), id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, ctx__, uniques__, uri__, states__) =
+    ?FunProto(t, Identifier(name), params)
+    ; origin-track-forced(
+        FunProto(
+          id
+        , origin-track-forced(
+            Identifier(
+              nabl-def(
+                ?c-uri1__
+              , ?s-uri1__
+              | lang__
+              , ctx__
+              , uniques__
+              , uri__
+              , uri__
+              , NablNsFunction()
+              , Unique()
+              , Current()
+              , [NablNsVariable()]
+              , []
+              )
+            )
+          |
+          )
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-prop-site(|lang__, ctx__, uris__, states__, implicits__) =
+    ?FunProto(t, Identifier(name), params)
+    ; (where(ty := <new-task-fixdeps(|ctx__, [])> Id(
+                                                    <get-or-create-property-task(|ctx__, Type())> t
+                                                  )
+             ; {prev__:
+                 ?prev__
+                 ; tys_param := <new-task-fixdeps(|ctx__, [prev__])> Id(
+                                                                       <get-or-create-property-task(|ctx__, Type())> params
+                                                                     )
+               })
+       ; FunProto(
+           id
+         , Identifier(
+             nabl-store-props(
+             | ctx__
+             , [ Prop(
+                   Type()
+                 , (ty, tys_param)
+                 , []
+                 )
+               ]
+             )
+           )
+         , id
+         ))
+    ; fail
+
+  nabl-get-scope =
+    ?FunDef(t, Identifier(name), params, stms)
+    ; ![NablNsVariable()]
+
+  nabl-get-name :
+    FunDef(t, Identifier(name), params, stms) -> name
+
+  nabl-name-apply(s) =
+    FunDef(id, Identifier(s), id, id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, ctx__, uniques__, uri__, states__) =
+    ?FunDef(t, Identifier(name), params, stms)
+    ; origin-track-forced(
+        FunDef(
+          id
+        , origin-track-forced(
+            Identifier(
+              nabl-def(
+                ?c-uri1__
+              , ?s-uri1__
+              | lang__
+              , ctx__
+              , uniques__
+              , uri__
+              , uri__
+              , NablNsFunction()
+              , Unique()
+              , Current()
+              , [NablNsVariable()]
+              , []
+              )
+            )
+          |
+          )
+        , id
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-prop-site(|lang__, ctx__, uris__, states__, implicits__) =
+    ?FunDef(t, Identifier(name), params, stms)
+    ; (where(ty := <new-task-fixdeps(|ctx__, [])> Id(
+                                                    <get-or-create-property-task(|ctx__, Type())> t
+                                                  )
+             ; {prev__:
+                 ?prev__
+                 ; tys_param := <new-task-fixdeps(|ctx__, [prev__])> Id(
+                                                                       <get-or-create-property-task(|ctx__, Type())> params
+                                                                     )
+               })
+       ; FunDef(
+           id
+         , Identifier(
+             nabl-store-props(
+             | ctx__
+             , [ Prop(
+                   Type()
+                 , (ty, tys_param)
+                 , []
+                 )
+               ]
+             )
+           )
+         , id
+         , id
+         ))
+    ; fail
+
+  nabl-get-name :
+    FunctionCall(Identifier(name), es) -> name
+
+  nabl-name-apply(s) =
+    FunctionCall(Identifier(s), id)
+
+  nabl-use-site(|lang__, ctx__, uniques__, uris__, states__) =
+    ?FunctionCall(Identifier(name), es)
+    ; origin-track-forced(
+        FunctionCall(
+          origin-track-forced(
+            Identifier(
+              nabl-use(
+              | lang__
+              , ctx__
+              , uniques__
+              , uris__
+              , [ <{:
+                     id
+                     ; !UseCandidate(
+                          NablNsFunction()
+                        , []
+                        , Current()
+                        , True()
+                        , []
+                        )
+                   }>
+                ]
+              )
+            )
+          |
+          )
+        , id
+        )
+      |
+      )
+
+  nabl-get-name :
+    Param(t, Decl(Identifier(name))) -> name
+
+  nabl-name-apply(s) =
+    Param(id, Decl(Identifier(s)))
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, ctx__, uniques__, uri__, states__) =
+    ?Param(t, Decl(Identifier(name)))
+    ; origin-track-forced(
+        Param(
+          id
+        , origin-track-forced(
+            Decl(
+              origin-track-forced(
+                Identifier(
+                  nabl-def(
+                    ?c-uri1__
+                  , ?s-uri1__
+                  | lang__
+                  , ctx__
+                  , uniques__
+                  , uri__
+                  , uri__
+                  , NablNsVariable()
+                  , Unique()
+                  , Current()
+                  , []
+                  , []
+                  )
+                )
+              |
+              )
+            )
+          |
+          )
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-prop-site(|lang__, ctx__, uris__, states__, implicits__) =
+    ?Param(t, Decl(Identifier(name)))
+    ; (where(ty := <new-task-fixdeps(|ctx__, [])> Id(
+                                                    <get-or-create-property-task(|ctx__, Type())> t
+                                                  ))
+       ; Param(
+           id
+         , Decl(
+             Identifier(
+               nabl-store-props(
+               | ctx__
+               , [Prop(Type(), ty, [])]
+               )
+             )
+           )
+         ))
+    ; fail
+
+  nabl-get-name :
+    Decl(t, Decl(Identifier(name))) -> name
+
+  nabl-name-apply(s) =
+    Decl(id, Decl(Identifier(s)))
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, ctx__, uniques__, uri__, states__) =
+    ?Decl(t, Decl(Identifier(name)))
+    ; origin-track-forced(
+        Decl(
+          id
+        , origin-track-forced(
+            Decl(
+              origin-track-forced(
+                Identifier(
+                  nabl-def(
+                    ?c-uri1__
+                  , ?s-uri1__
+                  | lang__
+                  , ctx__
+                  , uniques__
+                  , uri__
+                  , uri__
+                  , NablNsVariable()
+                  , Unique()
+                  , Current()
+                  , []
+                  , []
+                  )
+                )
+              |
+              )
+            )
+          |
+          )
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-prop-site(|lang__, ctx__, uris__, states__, implicits__) =
+    ?Decl(t, Decl(Identifier(name)))
+    ; (where(ty := <new-task-fixdeps(|ctx__, [])> Id(
+                                                    <get-or-create-property-task(|ctx__, Type())> t
+                                                  ))
+       ; Decl(
+           id
+         , Decl(
+             Identifier(
+               nabl-store-props(
+               | ctx__
+               , [Prop(Type(), ty, [])]
+               )
+             )
+           )
+         ))
+    ; fail
+
+  nabl-get-name :
+    DeclInit(t, Decl(Identifier(name)), e) -> name
+
+  nabl-name-apply(s) =
+    DeclInit(id, Decl(Identifier(s)), id)
+
+  nabl-def-site(child-uris__, sibl-uris__, implicits__|lang__, ctx__, uniques__, uri__, states__) =
+    ?DeclInit(t, Decl(Identifier(name)), e)
+    ; origin-track-forced(
+        DeclInit(
+          id
+        , origin-track-forced(
+            Decl(
+              origin-track-forced(
+                Identifier(
+                  nabl-def(
+                    ?c-uri1__
+                  , ?s-uri1__
+                  | lang__
+                  , ctx__
+                  , uniques__
+                  , uri__
+                  , uri__
+                  , NablNsVariable()
+                  , Unique()
+                  , Current()
+                  , []
+                  , []
+                  )
+                )
+              |
+              )
+            )
+          |
+          )
+        , id
+        )
+      |
+      )
+    ; match(child-uris__|c-uri1__)
+    ; match(sibl-uris__|s-uri1__)
+    ; match(implicits__|[])
+
+  nabl-prop-site(|lang__, ctx__, uris__, states__, implicits__) =
+    ?DeclInit(t, Decl(Identifier(name)), e)
+    ; (where(ty := <new-task-fixdeps(|ctx__, [])> Id(
+                                                    <get-or-create-property-task(|ctx__, Type())> t
+                                                  ))
+       ; DeclInit(
+           id
+         , Decl(
+             Identifier(
+               nabl-store-props(
+               | ctx__
+               , [Prop(Type(), ty, [])]
+               )
+             )
+           )
+         , id
+         ))
+    ; fail
+
+  nabl-get-name :
+    Var(Identifier(name)) -> name
+
+  nabl-name-apply(s) =
+    Var(Identifier(s))
+
+  nabl-use-site(|lang__, ctx__, uniques__, uris__, states__) =
+    ?Var(Identifier(name))
+    ; origin-track-forced(
+        Var(
+          origin-track-forced(
+            Identifier(
+              nabl-use(
+              | lang__
+              , ctx__
+              , uniques__
+              , uris__
+              , [ <{:
+                     id
+                     ; !UseCandidate(
+                          NablNsVariable()
+                        , []
+                        , Current()
+                        , True()
+                        , []
+                        )
+                   }>
+                ]
+              )
+            )
+          |
+          )
+        )
+      |
+      )
+
+  nabl-scoping-site =
+    ?ForDec(_, _, _, _)
+    ; nabl-scope(|[NablNsVariable()])
+
+  nabl-get-scope =
+    ?ForDec(_, _, _, _)
+    ; ![NablNsVariable()]
