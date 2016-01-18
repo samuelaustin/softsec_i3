@@ -7,27 +7,85 @@ module libstring {
   // str_copy(dst, src): copy characters of src buffer into dst buffer and return dst
 
   buffer str_copy(buffer dst, buffer src) {
+  	int s = src.length;
+  	dst = create(s);
+  	for(int i = 0; i < s; i++)
+  	{
+  		dst[i] = src[i];
+  	}
+  	return dst;
   } 
 	
 // str_clone(src) : create a new buffer that is an exact copy of src
 
   buffer str_clone(buffer src) {
+  	int s = src.length;
+  	buffer dst = create(s);
+  	for(int i = 0; i < s; i++)
+  	{
+  		dst[i] = src[i];
+  	}
+  	return dst;
   }  
 
   // str_concat(s1, s2): concatenate buffers s1 and s2 into a new buffer
 
   buffer str_concat(buffer s1, buffer s2) {
+  	int size1 = s1.length;
+  	int size2 = s2.length;
+  	int resSize = size1 + size2;
+  	
+  	buffer res = create(resSize);
+  	
+  	for(int i = 0; i < size1; i++)
+  	{
+  		res[i] = s1[i];
+  	}
+  	for(int i = 0; i < size2; i++)
+  	{
+  		res[i+size1] = s2[i];
+  	}
+  	return res;
   }
 
 // str_trim(s): remove leading and trailing spaces from s 
 // i.e. copy s into a new buffer without leading and trailing spaces
 
   buffer str_trim(buffer s) {
+  	int start = 0;
+  	int end = s.length - 1;
+  	
+  	while(start < s.length && s[start] == ' ')
+  	{
+  		start = start + 1;
+  	}
+  	while(end >= 0 && s[end] == ' ')
+  	{
+  		end = end - 1;
+  	}
+  	
+  	buffer trimmed = create(end - start + 1);
+  	for(int i = 0; i < trimmed.length; i++)
+  	{
+  		trimmed[i] = s[i+start];
+  	}
   }
 
   // str_equal(a, b): are the buffers a and b exactly equal?
 
   boolean str_equal(buffer first, buffer second) {
+  	if(first.length == second.length)
+  	{
+  		for(int i = 0; i < first.length; i++)
+  		{
+  			if(first[i] != second[i])
+  			{
+  				return false;
+  			}
+  		}
+  		return true;
+  	}
+  	return false;
   }
 
   // str_compare(s1, s2): compare two strings lexicographically
@@ -36,11 +94,31 @@ module libstring {
   // return 0 if the shortest string is equal to a prefix of the longest string 
 
   int str_compare(buffer s1, buffer s2) {
+  	int s = s1.length;
+  	if(s2.length < s)
+  	{
+  		s = s2.length;
+  	}
+  	
+  	for(int i = 0; i < s; i++)
+  	{
+  		if(s1[i] < s2[i])
+  		{
+  			return -1;
+  		}
+  		if(s1[i] > s2[i])
+  		{
+  			return 1;
+  		}
+  	}
+  	return 0;
   }
   
   // str_error(msg): print an error message and exit
 
   void str_error(buffer msg) {
+  	print(msg);
+  	exit;
   }
 
 }
