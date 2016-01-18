@@ -7,13 +7,22 @@ module libstring {
   // str_copy(dst, src): copy characters of src buffer into dst buffer and return dst
 
   buffer str_copy(buffer dst, buffer src) {
-  	int s = src.length;
-  	dst = create(s);
-  	for(int i = 0; i < s; i++)
+  	if(dst.length >= src.length)
   	{
-  		dst[i] = src[i];
+	  	int s = src.length;
+	  	for(int i = 0; i < s; i++)
+	  	{
+	  		dst[i] = src[i];
+	  	}
+	  	return dst;
   	}
-  	return dst;
+  	else
+  	{
+  		buffer errorMsg = create(28);
+  		errorMsg = "Destination buffer too small";
+  		str_error(errorMsg);
+  		return create(0);
+  	}
   } 
 	
 // str_clone(src) : create a new buffer that is an exact copy of src

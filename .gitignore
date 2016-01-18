@@ -1,5 +1,6 @@
 bufferc-examples/.cache
 target/
+BufferC/include/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
