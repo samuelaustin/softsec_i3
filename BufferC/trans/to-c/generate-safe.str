@@ -19,7 +19,7 @@ rules // buffer operations
 		Null() -> $[NULL]
 //  		
 	gen-c-special :
-		String(str) -> $[buffer *[<genc>str]; [<genc>str] = alloc_buf([i])]
+		String(str) -> $[[str]]
 		where i := <string-length>str
 //			
 	gen-c-special :
@@ -29,7 +29,7 @@ rules // buffer operations
 		Field(e, Length()) -> $[[<genc>e]->bufsize]
 //			
 	gen-c-special :
-		Assign(ArrayField(e1, e_idx), Assign(), e2) -> $[[<genc>e1][[<genc>e_idx]] = [<genc>e2]]
+		Assign(ArrayField(e1, e_idx), Assign(), e2) -> $[[<genc>e1][<genc>e_idx] = [<genc>e2]]
 //		
 	gen-c-special :
 		ArrayField(e1, e2) -> $[int [<genc>e1][[<genc>e2]]]
@@ -40,11 +40,11 @@ rules // buffer operations
 	gen-c-special :
 		FunctionCall(PrintF(), es) -> $[printf([<genc>es])]
 //			
-//	gen-c-special :
-//		FunctionCall(Fopen(), es) -> $[]
+	gen-c-special :
+		FunctionCall(Fopen(), es) -> $[fopen([<genc>es]);]
 //			
-//	gen-c-special :
-//		FunctionCall(Fread(), es) -> $[]
+	gen-c-special :
+		FunctionCall(Fread(), es) -> $[fread([<genc>es]);]
 
 rules // main function
 
