@@ -78,6 +78,7 @@ module libstring {
   	{
   		trimmed[i] = s[i+start];
   	}
+  	return trimmed;
   }
 
   // str_equal(a, b): are the buffers a and b exactly equal?
