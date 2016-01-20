@@ -6,9 +6,10 @@
 // the BufferC buffer data type.
 
 /* STRUCT */
-typedef struct {
+typedef struct _buffer {
 	char* ptr;
 	int bufsize;
+	// refCount initialized on 0.
 	int refCount = 0;
 } buffer;
 
@@ -56,6 +57,38 @@ buffer *concat(buffer* b1, buffer* b2){
 	return res;
 }
 
+int buf_equal(buffer *first, buffer *second){
+	if(first->bufsize == second->bufsize){
+		for(int i = 0; i < first->bufsize; i++){
+			if(first->ptr[i] != second->ptr[i]){
+				return 0;
+			}
+		}
+		return 1;
+	}
+	return 0;
+}
+
+int buf_comp(buffer *s1, buffer *s2){
+	if(buf_equal(s1, s2)){
+		return 0;
+	}
+	else{
+		int s = s1->bufsize;
+		if(s2->bufsize < s){
+			s = s2->bufsize
+		}
+		for(int i = 0; i < s; i++){
+			if(s1->ptr[i] < s2->ptr[i]){
+				return -1;
+			}
+			else {
+				return 1;
+			}
+		}
+	}
+}
+
 /* PRINTING */
 void print_buf(buffer *buf){
 	printf("%s", buf->ptr);
@@ -68,11 +101,22 @@ void println_buf(buffer *buf){
 
 /* REFERENCE COUNTING */
 void deref_buf(buffer *buf){
-	buf->refCount = buf->refCount - 1;
-	if(refCount = 0){
-		free(buf);
+	if(ref != NULL){
+		buf->refCount = buf->refCount - 1;
+		if(refCount <= 0){
+			free(buf->ptr);
+			free(buf);
+		}
+	}
+}
+
+void ref_buf(buffer *buf){
+	if(ref != NULL){
+		buf->refCount = buf->refCount + 1;
 	}
 }
 
 /* OTHER OPERATIONS */
-
+int char_is_space(char c){
+	return c == '\32' || c == '\t';
+}
