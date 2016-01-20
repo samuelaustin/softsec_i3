@@ -51,10 +51,14 @@ rules // main function
   // the main function takes 
 	
 	gen-c-header-special :
-  		FunDef(t, Identifier("main"), params, stms) -> $[int main(int argc, char **argv)]
+  		FunDef(t, Identifier("main"), params, stms) -> $[[<genc>t] main([<mapsep(genc|", ")>params]);]
 //    
 	gen-c-special :
-  		FunDef(t, Identifier("main"), params, stms) -> $[int main(int argc, char **argv)]
+  		FunDef(t, Identifier("main"), params, stms) -> $[
+      [<genc>t] main([<mapsep(genc|", ")>params]) {
+        [<gen-c-stms>stms]
+  		}
+    ]
     
 rules // reference counting
 				
@@ -62,8 +66,10 @@ rules // reference counting
 	
 	// a typical to change is assignment
 	
-//	gen-c-special :
-//		Assign(e1, Assign(), e2) -> $[[<genc>e1] = [<genc>e2]]
+	gen-c-special :
+		Assign(e1, Assign(), e2) -> $[deref_buf([<genc>e1]); 
+									[<genc>e1] = [<genc>e2];
+									ref_buf([<genc>e2])]
 
   // examples/refcount.bc contains a variety of scenarios
   
