@@ -6,7 +6,7 @@
 // the BufferC buffer data type.
 
 /* STRUCT */
-typedef struct {
+typedef struct _buffer {
 	char* ptr;
 	int bufsize;
 	// refCount initialized on 0.
@@ -69,6 +69,26 @@ int buf_equal(buffer *first, buffer *second){
 	return 0;
 }
 
+int buf_comp(buffer *s1, buffer *s2){
+	if(buf_equal(s1, s2)){
+		return 0;
+	}
+	else{
+		int s = s1->bufsize;
+		if(s2->bufsize < s){
+			s = s2->bufsize
+		}
+		for(int i = 0; i < s; i++){
+			if(s1->ptr[i] < s2->ptr[i]){
+				return -1;
+			}
+			else {
+				return 1;
+			}
+		}
+	}
+}
+
 /* PRINTING */
 void print_buf(buffer *buf){
 	printf("%s", buf->ptr);
@@ -81,9 +101,18 @@ void println_buf(buffer *buf){
 
 /* REFERENCE COUNTING */
 void deref_buf(buffer *buf){
-	buf->refCount = buf->refCount - 1;
-	if(refCount <= 0){
-		free(buf);
+	if(ref != NULL){
+		buf->refCount = buf->refCount - 1;
+		if(refCount <= 0){
+			free(buf->ptr);
+			free(buf);
+		}
+	}
+}
+
+void ref_buf(buffer *buf){
+	if(ref != NULL){
+		buf->refCount = buf->refCount + 1;
 	}
 }
 
