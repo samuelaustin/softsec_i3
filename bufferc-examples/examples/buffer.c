@@ -16,20 +16,54 @@ typedef struct {
 buffer *alloc_buf(int size) {
 	buffer *buf = (buffer *)malloc(sizeof(buffer));
 	buf->bufsize = size;
-	buf->ptr = (char *)malloc(buf->bufsize);
+	buf->ptr = (char *)malloc(buf->bufsize + 1);
+	buf->ptr[buf->bufsize] = "\0";
 	buf->refCount = buf->refCount + 1;
 	return buf;
 }
 
-buffer *copy(buffer *src) {
+/* STRING OPERATIONS */
+buffer *clone(buffer *src) {
 	buffer *dst = alloc_buf(src->bufsize);
-	strncpy(dst->ptr, src->ptr, dst->bufsize);
-	dst->ptr[dst->bufsize-1] = '\0';
+	dst = copy(dst, src);
+	dst->ptr[dst->bufsize] = "\0";
 	return dst;
 }
 
-/* PRINTING */
+buffer *copy(buffer *dst, buffer *src){
+	if(dst->bufsize >= src->bufsize){
+		int size = src->bufsize+1;
+		for(int i = 0; i < s; i++){
+			dst->ptr[i] = src->ptr[i];
+		}
+		return dst;
+	}
+	else{
+		return NULL; // TODO implement error message.
+	}
+}
 
+buffer *concat(buffer* b1, buffer* b2){
+	int size1 = b1->bufsize;
+	int size2 = b2->bufsize;
+	buffer *res = alloc_buf(size1 + size2);
+	for(int i = 0; i < size1; i++){
+		res->ptr[i] = b1->ptr[i];
+	}
+	for(int i = 0; i < size2; i++){
+		res->ptr[1+size1] = b2->ptr[i];
+	}
+	return res;
+}
+
+/* PRINTING */
+void print_buf(buffer *buf){
+	printf("%s", buf->ptr);
+}
+
+void println_buf(buffer *buf){
+	printf("%s\n", buf->ptr);
+}
 /* FILE OPERATIONS */
 
 /* REFERENCE COUNTING */
@@ -40,4 +74,5 @@ void deref_buf(buffer *buf){
 	}
 }
 
+/* OTHER OPERATIONS */
 
