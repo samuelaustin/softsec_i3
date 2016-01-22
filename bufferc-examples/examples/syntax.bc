@@ -65,6 +65,10 @@ module syntax {
     b.length;             // length of string
     FILE f = fopen("a", "r"); // open file
     fread(b, f);          // read file into buffer
+    a = b;
+    int q = 1;
+    int w = 2;
+    q = w;
   }
   
   void abstract_syntax(int i, int j) { 

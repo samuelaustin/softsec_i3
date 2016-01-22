@@ -29,10 +29,10 @@ rules // buffer operations
 		Field(e, Length()) -> $[[<genc>e]->bufsize]
 //			
 	gen-c-special :
-		Assign(ArrayField(e1, e_idx), Assign(), e2) -> $[[<genc>e1][<genc>e_idx] = [<genc>e2]]
+		Assign(ArrayField(e1, e_idx), Assign(), e2) -> ${assign_char({<genc>e1}, {<genc>e_idx}, {<genc>e2})}
 //		
 	gen-c-special :
-		ArrayField(e1, e2) -> $[[<genc>e1][<genc>e2]]
+		ArrayField(e1, e2) -> ${get_char_at_index({<genc>e1}, {<genc>e2})}
 //			
 	gen-c-special :
 		FunctionCall(Print(), es) -> $[printf([<genc>es])]
@@ -70,7 +70,10 @@ rules // reference counting
 		Assign(e1, Assign(), e2) -> $[deref_buf([<genc>e1]); 
 									[<genc>e1] = [<genc>e2];
 									ref_buf([<genc>e2])]
-
+		where
+			not(!e1 => Buffer());
+			not(!e2 => FunctionCall(Create(), es));
+			not(!e2 => String(str))
   // examples/refcount.bc contains a variety of scenarios
   
   
