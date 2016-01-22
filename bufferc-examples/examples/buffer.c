@@ -119,12 +119,35 @@ void println_buf(buffer *buf){
 }
 
 /* FILE OPERATIONS */
-buffer *safe_file_read(char* filename, int amtData){
-	FILE *fp = fopen(filename, "r");
-	fseek(fp, SEEK_SET, 0);
-	buffer *buf = alloc_buf(amtData);
-	fread(buf, 1, amtData, stdin);
-	return buf;
+void safe_file_read(buffer *b, FILE* f){
+	fseek(f, SEEK_SET, 0);
+	int amtData = amt_chars_in_file(f);
+	if(amtData > b->bufsize){
+		error("Buffer overflow detected.");
+	}
+	else{
+		fread(b->ptr, 1, amtData, stdin);
+	}
+}
+
+int amt_chars_in_file(FILE *f){
+	int count = 0;  /* number of characters seen */
+	/* character or EOF flag from input */
+	int ch;
+
+	if (f == NULL) {
+	    printf("File undefined.");
+	    exit(8);
+	}
+
+	while (1) {
+	    ch = fgetc(f);
+	    if (ch == EOF)
+	        break;
+	    ++count;
+	}
+	fclose(f);
+	return count;
 }
 
 /* REFERENCE COUNTING */
