@@ -40,7 +40,7 @@ buffer *copy(buffer *dst, buffer *src){
 		return dst;
 	}
 	else{
-		return NULL; // TODO implement error message.
+		error("Destination buffer not large enough to contain the message.");
 	}
 }
 
@@ -52,7 +52,7 @@ buffer *concat(buffer* b1, buffer* b2){
 		res->ptr[i] = b1->ptr[i];
 	}
 	for(int i = 0; i < size2; i++){
-		res->ptr[1+size1] = b2->ptr[i];
+		res->ptr[i+size1] = b2->ptr[i];
 	}
 	return res;
 }
@@ -86,6 +86,15 @@ int buf_comp(buffer *s1, buffer *s2){
 				return 1;
 			}
 		}
+	}
+}
+
+void assign_char(buffer *b, int index, char c){
+	if(index < b->bufsize){
+		b->ptr[i] = c;
+	}
+	else{
+		error("Out of bounds assignment error.");
 	}
 }
 
