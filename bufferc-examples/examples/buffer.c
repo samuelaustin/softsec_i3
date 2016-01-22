@@ -34,7 +34,7 @@ buffer *clone(buffer *src) {
 buffer *copy(buffer *dst, buffer *src){
 	if(dst->bufsize >= src->bufsize){
 		int size = src->bufsize+1;
-		for(int i = 0; i < s; i++){
+		for(int i = 0; i < size; i++){
 			dst->ptr[i] = src->ptr[i];
 		}
 		return dst;
@@ -52,7 +52,7 @@ buffer *concat(buffer* b1, buffer* b2){
 		res->ptr[i] = b1->ptr[i];
 	}
 	for(int i = 0; i < size2; i++){
-		res->ptr[1+size1] = b2->ptr[i];
+		res->ptr[i+size1] = b2->ptr[i];
 	}
 	return res;
 }
