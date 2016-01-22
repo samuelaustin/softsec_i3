@@ -89,12 +89,23 @@ int buf_comp(buffer *s1, buffer *s2){
 	}
 }
 
+
+/* CHARACTER ASSIGNMENT */
 void assign_char(buffer *b, int index, char c){
 	if(index < b->bufsize){
 		b->ptr[i] = c;
 	}
 	else{
 		error("Out of bounds assignment error.");
+	}
+}
+
+char get_char_at_index(buffer *b, int index){
+	if(index < b->bufsize){
+		return b[index];
+	}
+	else{
+		error("Index was out of the bound of the buffer.");
 	}
 }
 
@@ -106,7 +117,15 @@ void print_buf(buffer *buf){
 void println_buf(buffer *buf){
 	printf("%s\n", buf->ptr);
 }
+
 /* FILE OPERATIONS */
+buffer *safe_file_read(FILE *f, char* filename, int amtData){
+	FILE *fp = fopen(filename, "r");
+	fseek(fp, SEEK_SET, 0);
+	buffer *buf = alloc_buf(amtData);
+	fread(buf, 1, amtData, stdin);
+	return buf;
+}
 
 /* REFERENCE COUNTING */
 void deref_buf(buffer *buf){

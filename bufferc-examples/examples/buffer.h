@@ -27,9 +27,15 @@ int buf_equal(buffer *first, buffer *second);
 
 int buf_comp(buffer *s1, buffer *s2);
 
+void assign_char(buffer *b, int index, char c);
+
+char get_char_at_index(buffer *b, int index);
+
 void print_buf(buffer *buf);
 
 void println_buf(buffer *buf);
+
+buffer *safe_file_read(FILE *f, char* filename, int amtData);
 
 void deref_buf(buffer *buf);
 
