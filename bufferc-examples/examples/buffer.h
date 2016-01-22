@@ -35,7 +35,7 @@ void print_buf(buffer *buf);
 
 void println_buf(buffer *buf);
 
-buffer *safe_file_read(FILE *f, char* filename, int amtData);
+buffer *safe_file_read(char* filename, int amtData);
 
 void deref_buf(buffer *buf);
 

@@ -34,7 +34,7 @@ buffer *clone(buffer *src) {
 buffer *copy(buffer *dst, buffer *src){
 	if(dst->bufsize >= src->bufsize){
 		int size = src->bufsize+1;
-		for(int i = 0; i < s; i++){
+		for(int i = 0; i < size; i++){
 			dst->ptr[i] = src->ptr[i];
 		}
 		return dst;
@@ -119,7 +119,7 @@ void println_buf(buffer *buf){
 }
 
 /* FILE OPERATIONS */
-buffer *safe_file_read(FILE *f, char* filename, int amtData){
+buffer *safe_file_read(char* filename, int amtData){
 	FILE *fp = fopen(filename, "r");
 	fseek(fp, SEEK_SET, 0);
 	buffer *buf = alloc_buf(amtData);
