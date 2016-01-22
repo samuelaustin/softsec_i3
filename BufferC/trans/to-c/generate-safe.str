@@ -12,6 +12,10 @@ rules // buffer operations
   // in order to implement the basic buffer primitives.
   // See generate.str for inspiration.
 	
+	typeof :
+    e{t*} -> t
+    where <fetch-elem(Buffer())> t* => t
+	
 	gen-c-special :
 		Buffer() -> $[buffer *]
 //		
@@ -44,7 +48,7 @@ rules // buffer operations
 		FunctionCall(Fopen(), es) -> $[fopen([<genc>es])]
 //			
 	gen-c-special :
-		FunctionCall(Fread(), es) -> $[fread([<genc>es])]
+		FunctionCall(Fread(), es) -> $[safe_file_read([<genc>es])]
 
 rules // main function
 
@@ -71,8 +75,20 @@ rules // reference counting
 									[<genc>e1] = [<genc>e2];
 									ref_buf([<genc>e2])]
 		where
+		//<typeof> e1 => Buffer();
+		//<typeof> e2 => Buffer();
 			not(!e1 => Buffer());
 			not(!e2 => FunctionCall(Create(), es));
+			not(!e2 => String(str))
+			
+	gen-c-special :
+		Assign(e1, Assign(), e2) -> $[deref_buf([<genc>e1]); 
+									[<genc>e1] = [<genc>e2]]
+		where
+		//<typeof> e1 => Buffer();
+		//<typeof> e2 => Buffer();
+			not(!e1 => Buffer());
+			!e2 => FunctionCall(Create(), es);
 			not(!e2 => String(str))
   // examples/refcount.bc contains a variety of scenarios
   

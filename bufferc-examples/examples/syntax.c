@@ -69,7 +69,7 @@
 	printf(("b: %s\n", b));
 	b->bufsize;
 	FILE * f = fopen(("a", "r"));
-	fread((b, f));
+	safe_file_read((b, f));
 	deref_buf(a); 
 	a = b;
 	ref_buf(b);
