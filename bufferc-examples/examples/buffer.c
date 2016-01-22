@@ -9,8 +9,7 @@
 typedef struct _buffer {
 	char* ptr;
 	int bufsize;
-	// refCount initialized on 0.
-	int refCount = 0;
+	int refCount;
 } buffer;
 
 // Allocation, copying and dereferencing.
@@ -18,8 +17,8 @@ buffer *alloc_buf(int size) {
 	buffer *buf = (buffer *)malloc(sizeof(buffer));
 	buf->bufsize = size;
 	buf->ptr = (char *)malloc(buf->bufsize + 1);
-	buf->ptr[buf->bufsize] = "\0";
-	buf->refCount = buf->refCount + 1;
+	buf->ptr[buf->bufsize] = '\0';
+	buf->refCount = 1;
 	return buf;
 }
 
@@ -27,31 +26,34 @@ buffer *alloc_buf(int size) {
 buffer *clone(buffer *src) {
 	buffer *dst = alloc_buf(src->bufsize);
 	dst = copy(dst, src);
-	dst->ptr[dst->bufsize] = "\0";
+	dst->ptr[dst->bufsize] = '\0';
 	return dst;
 }
 
 buffer *copy(buffer *dst, buffer *src){
 	if(dst->bufsize >= src->bufsize){
 		int size = src->bufsize+1;
-		for(int i = 0; i < size; i++){
+		int i;
+		for(i = 0; i < size; i++){
 			dst->ptr[i] = src->ptr[i];
 		}
 		return dst;
 	}
 	else{
-		error("Destination buffer not large enough to contain the message.");
+		printf("Destination buffer not large enough to contain the message.");
+		exit(0);
 	}
 }
 
 buffer *concat(buffer* b1, buffer* b2){
 	int size1 = b1->bufsize;
 	int size2 = b2->bufsize;
+	int i;
 	buffer *res = alloc_buf(size1 + size2);
-	for(int i = 0; i < size1; i++){
+	for(i = 0; i < size1; i++){
 		res->ptr[i] = b1->ptr[i];
 	}
-	for(int i = 0; i < size2; i++){
+	for(i = 0; i < size2; i++){
 		res->ptr[i+size1] = b2->ptr[i];
 	}
 	return res;
@@ -59,7 +61,8 @@ buffer *concat(buffer* b1, buffer* b2){
 
 int buf_equal(buffer *first, buffer *second){
 	if(first->bufsize == second->bufsize){
-		for(int i = 0; i < first->bufsize; i++){
+        int i;
+		for(i = 0; i < first->bufsize; i++){
 			if(first->ptr[i] != second->ptr[i]){
 				return 0;
 			}
@@ -76,9 +79,10 @@ int buf_comp(buffer *s1, buffer *s2){
 	else{
 		int s = s1->bufsize;
 		if(s2->bufsize < s){
-			s = s2->bufsize
+			s = s2->bufsize;
 		}
-		for(int i = 0; i < s; i++){
+		int i;
+		for(i = 0; i < s; i++){
 			if(s1->ptr[i] < s2->ptr[i]){
 				return -1;
 			}
@@ -93,19 +97,21 @@ int buf_comp(buffer *s1, buffer *s2){
 /* CHARACTER ASSIGNMENT */
 void assign_char(buffer *b, int index, char c){
 	if(index < b->bufsize){
-		b->ptr[i] = c;
+		b->ptr[index] = c;
 	}
 	else{
-		error("Out of bounds assignment error.");
+		printf("Out of bounds assignment error.");
+		exit(0);
 	}
 }
 
 char get_char_at_index(buffer *b, int index){
 	if(index < b->bufsize){
-		return b[index];
+		return b->ptr[index];
 	}
 	else{
-		error("Index was out of the bound of the buffer.");
+		printf("Index was out of the bound of the buffer.");
+		exit(0);
 	}
 }
 
@@ -123,7 +129,8 @@ void safe_file_read(buffer *b, FILE* f){
 	fseek(f, SEEK_SET, 0);
 	int amtData = amt_chars_in_file(f);
 	if(amtData > b->bufsize){
-		error("Buffer overflow detected.");
+		printf("Buffer overflow detected.");
+		exit(0);
 	}
 	else{
 		fread(b->ptr, 1, amtData, stdin);
@@ -152,9 +159,9 @@ int amt_chars_in_file(FILE *f){
 
 /* REFERENCE COUNTING */
 void deref_buf(buffer *buf){
-	if(ref != NULL){
+	if(buf != NULL){
 		buf->refCount = buf->refCount - 1;
-		if(refCount <= 0){
+		if(buf->refCount <= 0){
 			free(buf->ptr);
 			free(buf);
 		}
@@ -162,7 +169,7 @@ void deref_buf(buffer *buf){
 }
 
 void ref_buf(buffer *buf){
-	if(ref != NULL){
+	if(buf != NULL){
 		buf->refCount = buf->refCount + 1;
 	}
 }
