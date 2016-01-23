@@ -1,0 +1,13 @@
+CS4105 - Software Security
+Assignment I3
+Samuel Austin & Tim van Rossum
+
+Design and Implementation Decisions
+
+Null-character
+
+In C, many standard library functions rely on strings ending with a null-character (\0) for correct behaviour. Strings that do not contain a null-character or have a null-character in the wrong place can cause overflows or other issues that may result in security flaws. 
+
+For the BufferC language our aim was to prevent the user of the buffer from making mistakes regarding the null-character. We achieve this by taking away the handling of the null-character from the user and implementing this functionality in our buffer related functions.
+
+This means that whenever a user creates a new buffer, copies a buffer or assigns a buffer, we make sure there is always a null-character present at the end of the buffer internally. As a result, the real internal size of our character array inside the buffer structure is one bigger than what the user specifies in order to make room for the null-character.
