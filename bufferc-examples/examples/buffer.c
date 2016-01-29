@@ -143,10 +143,18 @@ buffer *safe_format_string(buffer *b, buffer *params[]){
 		count += (str[i] == '%' && str[i+1] == 's');
 	}
 	if(count == params){
-		// Create buffer large enough to hold the entire string.
-
+		sum = b->bufsize;
+		int j;
+		for(j = 0; j < sizeof(params); j++){
+			sum += params[i]->bufsize;
+		}
+		char *res = (char *)malloc(sum);
+		sprintf(res, format, params)
 	}
-	return b;
+	else{
+		printf("Amount of parameters supplied does not match the amount of parameters in the format string.");
+		exit(0);
+	}
 }
 
 void print_buf(buffer *buf){
