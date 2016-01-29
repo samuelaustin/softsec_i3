@@ -135,24 +135,21 @@ char get_char_at_index(buffer *b, int index){
 }
 
 /* PRINTING + FORMAT STRINGS */
-buffer *safe_format_string(buffer *b, buffer *params[]){
+buffer *safe_format_string(buffer *b, buffer *string){
 	char* format = b->ptr;
 	int i;
 	int count = 0;
 	for(i = 0; i < b->bufsize-1; i++){
 		count += (str[i] == '%' && str[i+1] == 's');
 	}
-	if(count == params){
-		sum = b->bufsize;
-		int j;
-		for(j = 0; j < sizeof(params); j++){
-			sum += params[i]->bufsize;
-		}
-		char *res = (char *)malloc(sum);
-		sprintf(res, format, params)
+	if(count == 1){
+		int length = b->bufsize + string->bufsize - 2;
+		char *res = (char*)malloc(length);
+		sprintf(res, format, string->ptr);
+		return alloc_buf(length, res);
 	}
 	else{
-		printf("Amount of parameters supplied does not match the amount of parameters in the format string.");
+		printf("BufferC only allows a single parameter for format strings.");
 		exit(0);
 	}
 }
