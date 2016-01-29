@@ -115,7 +115,21 @@ char get_char_at_index(buffer *b, int index){
 	}
 }
 
-/* PRINTING */
+/* PRINTING + FORMAT STRINGS */
+buffer *safe_format_string(buffer *b, buffer *params[]){
+	char* format = b->ptr;
+	int i;
+	int count = 0;
+	for(i = 0; i < b->bufsize-1; i++){
+		count += (str[i] == '%' && str[i+1] == 's');
+	}
+	if(count == params){
+		// Create buffer large enough to hold the entire string.
+
+	}
+	return b;
+}
+
 void print_buf(buffer *buf){
 	printf("%s", buf->ptr);
 }

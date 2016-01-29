@@ -31,6 +31,8 @@ void assign_char(buffer *b, int index, char c);
 
 char get_char_at_index(buffer *b, int index);
 
+buffer *safe_format_string(buffer *b, buffer *params[]);
+
 void print_buf(buffer *buf);
 
 void println_buf(buffer *buf);
