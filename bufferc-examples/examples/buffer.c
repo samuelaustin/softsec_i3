@@ -22,6 +22,25 @@ buffer *alloc_buf(int size) {
 	return buf;
 }
 
+// Allocation, copying and dereferencing.
+buffer *alloc_buf(int size, char* str) {
+	buffer *buf = (buffer *)malloc(sizeof(buffer));
+	buf->bufsize = size;
+	buf->ptr = (char *)malloc(buf->bufsize + 1);
+	int i;
+	for(i = 0; i < size; i++)
+	{
+		buf->ptr[i] = str[i];
+		if(str[i] == '\0')
+		{
+			break;
+		}
+	}
+	buf->ptr[buf->bufsize] = '\0';
+	buf->refCount = 1;
+	return buf;
+}
+
 /* STRING OPERATIONS */
 buffer *clone(buffer *src) {
 	buffer *dst = alloc_buf(src->bufsize);
