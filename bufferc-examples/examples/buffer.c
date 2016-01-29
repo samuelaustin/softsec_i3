@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include "buffer.h"
 
 // This is the run-time library implementing the primitive operations for
@@ -135,18 +136,33 @@ char get_char_at_index(buffer *b, int index){
 }
 
 /* PRINTING + FORMAT STRINGS */
-buffer *safe_format_string(buffer *b, buffer *string){
-	char* format = b->ptr;
-	int i;
-	int count = 0;
-	for(i = 0; i < b->bufsize-1; i++){
-		count += (str[i] == '%' && str[i+1] == 's');
-	}
-	if(count == 1){
-		int length = b->bufsize + string->bufsize - 2;
-		char *res = (char*)malloc(length);
-		sprintf(res, format, string->ptr);
-		return alloc_buf(length, res);
+buffer *safe_format_string(int count, ...){
+
+	if(count == 2)
+	{
+		va_list ap;
+		va_start(ap, count); /* Requires the last fixed parameter (to get the address) */
+		buffer *formatBuf = va_arg(ap, buffer*);
+		buffer *strBuf = va_arg(ap, buffer*);
+		va_end(ap);
+
+		char* format = formatBuf->ptr;
+		int i;
+		int countFormatStr = 0;
+		for(i = 0; i < formatBuf->bufsize-1; i++){
+			countFormatStr += (format[i] == '%' && format[i+1] == 's');
+		}
+
+		if(countFormatStr == 1){
+			int length = formatBuf->bufsize + strBuf->bufsize - 2;
+			char *res = (char*)malloc(length);
+			sprintf(res, format, strBuf->ptr);
+			return alloc_buf(length, res);
+		}
+		else{
+			printf("BufferC only allows a single parameter for format strings.");
+			exit(0);
+		}
 	}
 	else{
 		printf("BufferC only allows a single parameter for format strings.");

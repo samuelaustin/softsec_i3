@@ -5,6 +5,8 @@ imports to-c/generate
 imports to-c/annotate-returns
 imports runtime/types/-
 imports runtime/editor/annotations
+imports runtime/task/- 
+imports signatures/- 
 
 imports runtime/types/query
   
@@ -41,14 +43,29 @@ rules // buffer operations
 		ArrayField(e1, e2) -> ${get_char_at_index({<genc>e1}, {<genc>e2})}
 //			
 	gen-c-special :
-		FunctionCall(Print(), es) -> $[printf([<genc>es])]
-		where
-			//<get-type> es => Buffer();
-			!es => FunctionCall(Create(), s);
-			not(!es => String(str))
+		FunctionCall(Print(), es) -> $[printf([<genc>es]->ptr)]
+
 //			
+	custom-check(|ctx, name, error): 
+	e -> <id> 
+	where 
+	t := <type-task(|ctx)> e ; 
+	check := <new-task(|ctx)> Rewrite(name, t) ; 
+	<task-create-error-on-failure(|ctx, check, error)> e 
+	
+	
+	nabl-constraint(|ctx) : 
+	FunctionCall(PrintF(), [e | es]) -> <fail> 
+	where 
+	<custom-check(|ctx,"buf-check","buffer expected as first argument to printf")> e ; 
+	<map(custom-check(|ctx,"var-arg-check","buffer expected"))> es 
+	
+	task-rewrite : ("buf-check", type) -> <?Buffer()> type 
+	task-rewrite : ("var-arg-check", type) -> <?Buffer()> type
+	
 	gen-c-special :
-		FunctionCall(PrintF(), es) -> $[printf([<genc>es])]
+		FunctionCall(PrintF(), es) -> $[safe_format_string([<genc>es])->ptr]
+
 //			
 	gen-c-special :
 		FunctionCall(Fopen(), es) -> $[fopen([<genc>es])]
@@ -98,6 +115,9 @@ rules // reference counting
 			!e2 => FunctionCall(Identifier(i), es);
 			not(!e2 => FunctionCall(Create(), es));
 			not(!e2 => String(str))
+	
+	gen-c-special : 
+		Return("final") -> $[]
 		
   // examples/refcount.bc contains a variety of scenarios
   
