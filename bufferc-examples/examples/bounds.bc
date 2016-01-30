@@ -1,0 +1,39 @@
+module bounds {
+	
+	void within_bounds_read()
+	{
+		buffer test = create(5);
+		for(int i = 0; i < test.length; i++)
+		{
+			buffer p = create(1);
+			p[0] = test[i];
+			print(p);
+		}
+	}
+	
+	void out_of_bounds_read()
+	{
+		int s = 5;
+		buffer test = create(s);
+		for(int i = 0; i < 2*s; i++)
+		{
+			buffer p = create(1);
+			p[0] = test[i];
+			print(p);
+		}
+	}
+	
+	void within_bounds_assign()
+	{
+		int s = 5;
+		buffer test = create(s);
+		test[s-1] = 't';
+	}
+	
+	void out_of_bounds_assign()
+	{
+		int s = 5;
+		buffer test = create(s);
+		test[2*s] = 't';
+	}
+}

@@ -31,6 +31,7 @@ module refcount {
 	buffer initAlias() {
 	  buffer a = create(4);
 	  buffer b = a;
+	  return b;
 	}
 
 	buffer test3aAux() {
@@ -129,6 +130,7 @@ module refcount {
 		buffer b = create(4);
 		buffer a;
 		a = cnst(b);
+		return a;
 	} 
 	  
 	buffer cpy(buffer a) {    
@@ -137,7 +139,8 @@ module refcount {
 	buffer test_cpy() {
 		buffer b = create(4);
 		buffer a;
-		a = cpy(b);  
+		a = cpy(b);
+		return a;
 	}
 	 
 	buffer h(buffer b, int i) {

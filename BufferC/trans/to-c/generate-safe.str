@@ -116,6 +116,14 @@ rules // reference counting
 			not(!e2 => FunctionCall(Create(), es));
 			not(!e2 => String(str))
 	
+	// Assignemnt of a buffer from an allocation (creation of new buffer)
+	gen-c-special :
+		Assign(e1, Assign(), e2) -> $[deref_buf([<genc>e1]); 
+									[<genc>e1] = [<genc>e2]]
+		where
+			<get-type> e1 => Buffer();
+			!e2 => FunctionCall(Create(), es)
+	
 	gen-c-special : 
 		Return("final") -> $[]
 		
