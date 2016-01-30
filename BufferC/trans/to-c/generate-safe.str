@@ -27,7 +27,7 @@ rules // buffer operations
 		Null() -> $[NULL]
 //  		
 	gen-c-special :
-		String(str) -> $[alloc_buf([<string-length>str]-2, [str])]
+		String(str) -> $[alloc_buf_string([<string-length>str]-2, [str])]
 		where i := <string-length>str
 //			
 	gen-c-special :

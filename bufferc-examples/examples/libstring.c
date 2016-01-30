@@ -6,7 +6,7 @@
 	
 	int chr_is_space(char c) {
 	return ((c == '\32') || (c == '\t'));
-	Return("final"())
+	
 	}
 	
 	buffer * str_copy(buffer * dst, buffer * src) {
@@ -15,17 +15,17 @@
 	  int s = src->bufsize;
 	  
 	  for(int i = 0; (i <  s); i++) {
-	  		dst[i] = src[i];
+	  		assign_char(dst, i, get_char_at_index(src, i));
 	  	}
 	  
 	  return dst; 
 	} else {
 		buffer * errorMsg = alloc_buf((28));
-		errorMsg = "Destination buffer too small";
+		errorMsg = alloc_buf_string(30-2, "Destination buffer too small");
 		str_error(errorMsg);
 		return alloc_buf((0));
 	}
-	Return("final"())
+	
 	}
 	
 	buffer * str_clone(buffer * src) {
@@ -33,11 +33,11 @@
 	buffer * dst = alloc_buf((s));
 	
 	for(int i = 0; (i <  s); i++) {
-			dst[i] = src[i];
+			assign_char(dst, i, get_char_at_index(src, i));
 		}
 	
 	return dst;
-	Return("final"())
+	
 	}
 	
 	buffer * str_concat(buffer * s1, buffer * s2) {
@@ -47,39 +47,39 @@
 	buffer * res = alloc_buf((resSize));
 	
 	for(int i = 0; (i <  size1); i++) {
-			res[i] = s1[i];
+			assign_char(res, i, get_char_at_index(s1, i));
 		}
 	
 	
 	for(int i = 0; (i <  size2); i++) {
-			res[(i + size1)] = s2[i];
+			assign_char(res, (i + size1), get_char_at_index(s2, i));
 		}
 	
 	return res;
-	Return("final"())
+	
 	}
 	
 	buffer * str_trim(buffer * s) {
 	int start = 0;
 	int end = (s->bufsize - 1);
 	
-	while(((start <  s->bufsize) && (s[start] == ' '))) {
+	while(((start <  s->bufsize) && (get_char_at_index(s, start) == ' '))) {
 		start = (start + 1);
 	}
 	
 	
-	while(((end >= 0) && (s[end] == ' '))) {
+	while(((end >= 0) && (get_char_at_index(s, end) == ' '))) {
 		end = (end - 1);
 	}
 	
 	buffer * trimmed = alloc_buf((((end - start) + 1)));
 	
 	for(int i = 0; (i <  trimmed->bufsize); i++) {
-			trimmed[i] = s[(i + start)];
+			assign_char(trimmed, i, get_char_at_index(s, (i + start)));
 		}
 	
 	return trimmed;
-	Return("final"())
+	
 	}
 	
 	int str_equal(buffer * first, buffer * second) {
@@ -88,7 +88,7 @@
 	  
 	  for(int i = 0; (i <  first->bufsize); i++) {
 	  		
-	  		if((first[i] != second[i])) {
+	  		if((get_char_at_index(first, i) != get_char_at_index(second, i))) {
 	  		  return 0;
 	  		}
 	  		
@@ -98,7 +98,7 @@
 	}
 	
 	return 0;
-	Return("final"())
+	
 	}
 	
 	int str_compare(buffer * s1, buffer * s2) {
@@ -111,24 +111,24 @@
 	
 	for(int i = 0; (i <  s); i++) {
 			
-			if((s1[i] <  s2[i])) {
+			if((get_char_at_index(s1, i) <  get_char_at_index(s2, i))) {
 			  return -1;
 			}
 			
 			
-			if((s1[i] >  s2[i])) {
+			if((get_char_at_index(s1, i) >  get_char_at_index(s2, i))) {
 			  return 1;
 			}
 			
 		}
 	
 	return 0;
-	Return("final"())
+	
 	}
 	
 	void str_error(buffer * msg) {
-	printf((msg));
+	printf((msg)->ptr);
 	exit;
-	Return("final"())
+	
 	}
 	

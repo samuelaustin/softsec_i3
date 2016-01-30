@@ -6,96 +6,99 @@
 	
 	void test1() {
 	buffer * a = alloc_buf((4));
-	buffer * b = "56789";
+	buffer * b = alloc_buf_string(7-2, "56789");
 	buffer * c;
 	assign_char(a, 0, 'a');
-	printf((c));
-	Return("final"())
+	printf((c)->ptr);
+	
 	}
 	
 	void test2() {
 	buffer * a = alloc_buf((4));
-	buffer * b = "56789";
+	buffer * b = alloc_buf_string(7-2, "56789");
 	deref_buf(a); 
 	a = b;
 	ref_buf(b);
-	printf((a));
-	Return("final"())
+	printf((a)->ptr);
+	
 	}
 	
 	buffer * test3aux(buffer * b) {
 	assign_char(b, 0, '8');
 	return b;
-	Return("final"())
+	
 	}
 	
 	void test3() {
 	buffer * a = alloc_buf((4));
 	buffer * b = test3aux(a);
-	printf((a));
-	Return("final"())
+	printf((a)->ptr);
+	
 	}
 	
 	buffer * initAlias() {
 	buffer * a = alloc_buf((4));
 	buffer * b = a;
-	Return("final"())
+	return b;
+	
 	}
 	
 	buffer * test3aAux() {
 	buffer * b = alloc_buf((4));
 	assign_char(b, 0, '8');
 	return b;
-	Return("final"())
+	
 	}
 	
 	void test3a() {
 	buffer * b = test3aAux();
-	printf((b));
-	Return("final"())
+	printf((b)->ptr);
+	
 	}
 	
 	buffer * test3bAux(buffer * b) {
+	deref_buf(b); 
 	b = alloc_buf((8));
 	return b;
-	Return("final"())
+	
 	}
 	
 	void test3b() {
 	buffer * a = alloc_buf((4));
 	buffer * b = test3bAux(a);
-	printf((a));
-	printf((b));
-	Return("final"())
+	printf((a)->ptr);
+	printf((b)->ptr);
+	
 	}
 	
 	void test4aux(buffer * b) {
 	assign_char(b, 0, '8');
-	Return("final"())
+	
 	}
 	
 	void test4() {
 	buffer * a = alloc_buf((4));
 	test4aux(a);
-	printf((a));
-	Return("final"())
+	printf((a)->ptr);
+	
 	}
 	
 	void test5aux(buffer * b) {
 	assign_char(b, 0, '8');
-	Return("final"())
+	
 	}
 	
 	void test5() {
 	test4aux(alloc_buf((4)));
-	Return("final"())
+	
 	}
 	
 	buffer * test6aux(buffer * b) {
+	deref_buf(b); 
 	b = alloc_buf((8));
 	assign_char(b, 0, '8');
 	return b;
-	Return("final"())
+	
 	}
 	
 	void test6() {
@@ -104,40 +107,40 @@
 	deref_buf(a); 
 	a = b;
 	ref_buf(b);
-	printf((a));
+	printf((a)->ptr);
 	alloc_buf((5));
-	Return("final"())
+	
 	}
 	
 	buffer * test7Aux1(buffer * b) {
 	assign_char(b, 0, '8');
 	return b;
-	Return("final"())
+	
 	}
 	
 	buffer * test7Aux2(buffer * b) {
 	assign_char(b, 1, '9');
 	return b;
-	Return("final"())
+	
 	}
 	
 	void test7() {
 	buffer * a = alloc_buf((4));
 	buffer * b = test7Aux2(test7Aux1(a));
-	printf((a));
-	Return("final"())
+	printf((a)->ptr);
+	
 	}
 	
 	buffer * test8aux(buffer * b) {
 	return b;
-	Return("final"())
+	
 	}
 	
 	void test8() {
 	buffer * a = alloc_buf((4));
 	test8aux(a);
-	printf((a));
-	Return("final"())
+	printf((a)->ptr);
+	
 	}
 	
 	buffer * f(buffer * b, int i) {
@@ -146,18 +149,18 @@
 	b = a;
 	ref_buf(a);
 	return b;
-	Return("final"())
+	
 	}
 	
 	buffer * g(buffer * b, int i) {
 	buffer * a = alloc_buf((i));
 	return a;
-	Return("final"())
+	
 	}
 	
 	buffer * cnst(buffer * b) {
-	return "uvwxyz";
-	Return("final"())
+	return alloc_buf_string(8-2, "uvwxyz");
+	
 	}
 	
 	buffer * test_cnst() {
@@ -165,13 +168,14 @@
 	buffer * a;
 	deref_buf(a); 
 	a = cnst(b);
-	ref_buf(cnst(b));
-	Return("final"())
+	ref_buf(a);
+	return a;
+	
 	}
 	
 	buffer * cpy(buffer * a) {
 	return a;
-	Return("final"())
+	
 	}
 	
 	buffer * test_cpy() {
@@ -179,35 +183,35 @@
 	buffer * a;
 	deref_buf(a); 
 	a = cpy(b);
-	ref_buf(cpy(b));
-	Return("final"())
+	ref_buf(a);
+	return a;
+	
 	}
 	
 	buffer * h(buffer * b, int i) {
 	int j = 0;
 	buffer * c = cpy(b);
-	deref_buf(i); 
 	i = (i + 1);
-	ref_buf((i + 1));
 	buffer * a = alloc_buf((i));
 	deref_buf(b); 
 	b = a;
 	ref_buf(a);
 	return c;
-	Return("final"())
+	
 	}
 	
 	void m() {
 	buffer * b;
+	deref_buf(b); 
 	b = alloc_buf((5));
-	Return("final"())
+	
 	}
 	
 	void main() {
-	buffer * d = h("abcd", 4);
-	printf((d));
-	buffer * e = cnst("ghij");
-	printf((e));
-	Return("final"())
+	buffer * d = h(alloc_buf_string(6-2, "abcd"), 4);
+	printf((d)->ptr);
+	buffer * e = cnst(alloc_buf_string(6-2, "ghij"));
+	printf((e)->ptr);
+	
 	}
 	

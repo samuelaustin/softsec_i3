@@ -57,4 +57,4 @@
 	buffer * h(buffer * b, int i);
 	
 	void m();
-	int main(int argc, char **argv)
+	void main();

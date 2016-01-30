@@ -141,7 +141,7 @@ buffer *safe_format_string(int count, ...){
 	if(count == 2)
 	{
 		va_list ap;
-		va_start(ap, count); /* Requires the last fixed parameter (to get the address) */
+		va_start(ap, count);
 		buffer *formatBuf = va_arg(ap, buffer*);
 		buffer *strBuf = va_arg(ap, buffer*);
 		va_end(ap);
