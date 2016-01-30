@@ -24,7 +24,7 @@ buffer *alloc_buf(int size) {
 }
 
 // Allocation, copying and dereferencing.
-buffer *alloc_buf(int size, char* str) {
+buffer *alloc_buf_string(int size, char* str) {
 	buffer *buf = (buffer *)malloc(sizeof(buffer));
 	buf->bufsize = size;
 	buf->ptr = (char *)malloc(buf->bufsize + 1);
@@ -157,7 +157,7 @@ buffer *safe_format_string(int count, ...){
 			int length = formatBuf->bufsize + strBuf->bufsize - 2;
 			char *res = (char*)malloc(length);
 			sprintf(res, format, strBuf->ptr);
-			return alloc_buf(length, res);
+			return alloc_buf_string(length, res);
 		}
 		else{
 			printf("BufferC only allows a single parameter for format strings.");

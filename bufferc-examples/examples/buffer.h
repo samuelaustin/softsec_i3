@@ -17,7 +17,7 @@ typedef struct _buffer buffer;
 
 buffer *alloc_buf(int size);
 
-buffer *alloc_buf(int size, char* str);
+buffer *alloc_buf_string(int size, char* str);
 
 buffer *clone(buffer *src);
 
@@ -33,7 +33,7 @@ void assign_char(buffer *b, int index, char c);
 
 char get_char_at_index(buffer *b, int index);
 
-buffer *safe_format_string(buffer *b, buffer *string);
+buffer *safe_format_string(int count, ...);
 
 void print_buf(buffer *buf);
 
